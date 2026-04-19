@@ -10,7 +10,7 @@
 A production-grade, schema-driven workflow orchestration module built with React, React Flow, and Zustand. This application allows HR administrators to design, validate, and simulate complex operational workflows with real-time feedback and graph-based execution.
 
 
-## 🚀 Features
+##  Features
 
 - **Advanced Graph Canvas**: Drag-and-drop node creation, interactive connections, and a mini-map for navigation.
 - **Strict Validation Engine**: Real-time graph analysis ensuring exactly one Start node, reachability from terminal points, and cycle detection.
@@ -19,7 +19,7 @@ A production-grade, schema-driven workflow orchestration module built with React
 - **Persistence**: Export and Import workflows as JSON for portability and storage.
 - **Professional UX**: Premium aesthetics with status indicators, responsive panels, and smooth animations.
 
-## 🛠 Tech Stack
+## 🛠Tech Stack
 
 - **Framework**: React 18 (Vite)
 - **Styling**: Tailwind CSS (Vanilla CSS for custom animations)
@@ -28,7 +28,7 @@ A production-grade, schema-driven workflow orchestration module built with React
 - **Utility**: Nanoid (ID generation)
 - **Language**: TypeScript (Strict mode)
 
-## 🏗 Architecture & Design
+##  Architecture & Design
 
 ### State Management (Zustand)
 The application follows a unidirectional data flow pattern. The `workflowStore` serves as the single source of truth for nodes, edges, selection state, and validation status. Every mutation to the canvas (moving, connecting, deleting) triggers a debounced validation cycle.
@@ -51,7 +51,7 @@ Automation nodes are refactored to be schema-driven. Adding a new automation act
 1. Adding a schema to the `getActionSchemas` API response.
 2. The `ConfigPanel` will automatically render the appropriate inputs (text, select, textarea) based on the metadata.
 
-## ⚙️ Setup Instructions
+##  Setup Instructions
 
 ### Prerequisites
 - Node.js (v16+)
@@ -68,7 +68,7 @@ npm run dev
 
 The application will be available at `http://localhost:5173`.
 
-## 🧠 Trade-offs & Assumptions
+##  Trade-offs & Assumptions
 
 - **Cycle Handling**: For this version, cyclic graphs are marked as "Invalid" to enforce deterministic HR flows. In future iterations, loops could be supported with explicit "Maximum Iteration" configs.
 - **Mock Persistence**: State is maintained in-memory and lost on refresh. JSON Export/Import is the primary way to persist designs for now.
@@ -76,7 +76,7 @@ The application will be available at `http://localhost:5173`.
 
 ---
 
-### 🔌 API Layer
+###  API Layer
 
 #### GET /automations
 Returns available automated actions with dynamic param schemas:
@@ -103,7 +103,7 @@ Accepts serialized workflow JSON, returns step-by-step execution result:
 }
 ```
 
-### ✅ Completed vs. What I'd Add Next
+###  Completed vs. What I'd Add Next
 
 #### Completed
 - All 5 custom node types with full TypeScript interfaces (strict mode)
