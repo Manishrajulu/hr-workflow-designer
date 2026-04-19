@@ -19,7 +19,7 @@ A production-grade, schema-driven workflow orchestration module built with React
 - **Persistence**: Export and Import workflows as JSON for portability and storage.
 - **Professional UX**: Premium aesthetics with status indicators, responsive panels, and smooth animations.
 
-## 🛠Tech Stack
+## Tech Stack
 
 - **Framework**: React 18 (Vite)
 - **Styling**: Tailwind CSS (Vanilla CSS for custom animations)
