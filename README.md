@@ -1,5 +1,5 @@
 # HR Workflow Designer
-## 🖼 Preview
+##  Preview
 
 ### Canvas
 ![HR Workflow Designer](./screenshot.jpeg)
