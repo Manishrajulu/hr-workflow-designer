@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ─── React Flow overrides ─────────────────────────────────────────────────── */
+
+.react-flow__renderer {
+  background: #f8fafc;
+}
+
+.react-flow__edge-path {
+  stroke: #94a3b8;
+  stroke-width: 1.5;
+}
+
+.react-flow__edge.selected .react-flow__edge-path,
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke: #6366f1;
+  stroke-width: 2;
+}
+
+.react-flow__edge-text {
+  font-size: 11px;
+  fill: #64748b;
+}
+
+.react-flow__handle {
+  width: 12px !important;
+  height: 12px !important;
+  border: 2px solid white !important;
+  background: #94a3b8 !important;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.react-flow__handle:hover {
+  background: #6366f1 !important;
+  transform: scale(1.2);
+}
+
+.react-flow__handle-connecting {
+  background: #6366f1 !important;
+}
+
+.react-flow__controls {
+  border: 0.5px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
+  overflow: hidden;
+}
+
+.react-flow__controls-button {
+  border: none !important;
+  border-bottom: 0.5px solid #e2e8f0 !important;
+  background: white !important;
+  color: #64748b !important;
+  width: 28px !important;
+  height: 28px !important;
+  transition: background 0.15s !important;
+}
+
+.react-flow__controls-button:hover {
+  background: #f8fafc !important;
+  color: #1e293b !important;
+}
+
+.react-flow__controls-button:last-child {
+  border-bottom: none !important;
+}
+
+.react-flow__controls-button svg {
+  fill: currentColor !important;
+  max-width: 12px !important;
+  max-height: 12px !important;
+}
+
+.react-flow__minimap {
+  border: 0.5px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
+  overflow: hidden;
+}
+
+.react-flow__attribution {
+  display: none !important;
+}
+
+/* Connection line while dragging */
+.react-flow__connectionline {
+  stroke: #6366f1;
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+}
+
+/* Node selection box */
+.react-flow__nodesselection-rect {
+  background: rgba(99, 102, 241, 0.04);
+  border: 1px solid #6366f1;
+  border-radius: 8px;
+}
+
+/* Marquee selection */
+.react-flow__selection {
+  background: rgba(99, 102, 241, 0.04);
+  border: 1px solid #6366f1;
+  border-radius: 4px;
+}
+
+/* ─── Scrollbar ────────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ─── Animations ───────────────────────────────────────────────────────────── */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.2s ease-out forwards;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+.animate-shake {
+  animation: shake 0.2s ease-in-out infinite;
+}
