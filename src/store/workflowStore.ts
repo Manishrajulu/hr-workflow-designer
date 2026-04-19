@@ -123,6 +123,9 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
         actionParams: {},
         status: 'idle',
         meta: config.defaultData.meta ?? '',
+        endMessage: config.defaultData.endMessage ?? '',
+        summaryFlag: config.defaultData.summaryFlag ?? false,
+        customFields: config.defaultData.customFields ?? [],
         ...config.defaultData,
       },
     }

@@ -38,6 +38,9 @@ export interface NodeData {
   status: NodeStatus
   meta: string
   isInvalid?: boolean
+  endMessage: string
+  summaryFlag: boolean
+  customFields: Array<{ key: string; value: string }>
 }
 
 export interface WorkflowNode {
@@ -90,7 +93,7 @@ export const NODE_TYPE_CONFIG: Record<NodeType, {
     borderColor: '#bbf7d0',
     iconBg: '#dcfce7',
     tag: 'trigger',
-    defaultData: { assignee: 'System', meta: 'Workflow trigger' },
+    defaultData: { assignee: 'System', meta: 'Workflow trigger', customFields: [] },
   },
   task: {
     label: 'Task',
@@ -100,7 +103,7 @@ export const NODE_TYPE_CONFIG: Record<NodeType, {
     borderColor: '#bfdbfe',
     iconBg: '#dbeafe',
     tag: 'task',
-    defaultData: { assignee: 'HR Team', meta: 'Assigned action' },
+    defaultData: { assignee: 'HR Team', meta: 'Assigned action', customFields: [] },
   },
   approval: {
     label: 'Approval',
@@ -130,6 +133,12 @@ export const NODE_TYPE_CONFIG: Record<NodeType, {
     borderColor: '#fbcfe8',
     iconBg: '#fce7f3',
     tag: 'end',
-    defaultData: { assignee: '—', meta: 'Terminal state' },
+    defaultData: { 
+      assignee: '—', 
+      meta: 'Terminal state',
+      endMessage: 'Workflow completed successfully.',
+      summaryFlag: false,
+      customFields: []
+    },
   },
 }

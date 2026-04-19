@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { useWorkflowStore } from '../../store/workflowStore'
-import type { NodeData, ActionSchema } from '../../types/workflow'
+import type { NodeData } from '../../types/workflow'
 import { NODE_TYPE_CONFIG } from '../../types/workflow'
-import { getActionSchemas } from '../../api/mockApi'
+import { getAutomations } from '../../api/mockApi'
+import type { AutomationAction } from '../../api/mockApi'
+import { KeyValueEditor } from '../ui/KeyValueEditor'
 
 interface FieldProps {
   label: string
@@ -50,10 +52,10 @@ export const ConfigPanel = () => {
   const [form, setForm] = useState<Partial<NodeData>>({})
   const [errors, setErrors] = useState<FormErrors>({})
   const [saved, setSaved] = useState(false)
-  const [schemas, setSchemas] = useState<ActionSchema[]>([])
+  const [automationActions, setAutomationActions] = useState<AutomationAction[]>([])
 
   useEffect(() => {
-    getActionSchemas().then(setSchemas)
+    getAutomations().then(setAutomationActions)
   }, [])
 
   useEffect(() => {
@@ -87,19 +89,6 @@ export const ConfigPanel = () => {
     if (errors[key]) setErrors(prev => ({ ...prev, [key]: undefined }))
   }
 
-  const setParam = (name: string, value: any) => {
-    const actionParams = { ...(form.actionParams || {}), [name]: value }
-    set('actionParams', actionParams)
-  }
-
-  const handleActionTypeChange = (type: string) => {
-    setForm(prev => ({
-      ...prev,
-      actionType: type,
-      actionParams: {} // Reset params on type change
-    }))
-  }
-
   const validate = (): boolean => {
     const newErrors: FormErrors = {}
     if (!form.label?.trim()) newErrors.label = 'Title is required'
@@ -117,7 +106,7 @@ export const ConfigPanel = () => {
     setTimeout(() => setSaved(false), 2000)
   }
 
-  const currentSchema = schemas.find(s => s.id === form.actionType)
+  const selectedAction = automationActions.find(a => a.id === form.actionType)
 
   return (
     <aside className="w-64 flex-shrink-0 flex flex-col bg-white border-l border-slate-200 overflow-y-auto">
@@ -160,6 +149,17 @@ export const ConfigPanel = () => {
           </div>
         </section>
 
+        {/* Start-specific */}
+        {selectedNode.type === 'start' && (
+          <section>
+            <SectionHeader>Custom Metadata</SectionHeader>
+            <KeyValueEditor
+              pairs={form.customFields ?? []}
+              onChange={pairs => setForm(prev => ({ ...prev, customFields: pairs }))}
+            />
+          </section>
+        )}
+
         {/* Task-specific */}
         {selectedNode.type === 'task' && (
           <section>
@@ -181,6 +181,11 @@ export const ConfigPanel = () => {
                   onChange={e => set('dueDate', e.target.value)}
                 />
               </Field>
+              <SectionHeader>Custom Fields</SectionHeader>
+              <KeyValueEditor
+                pairs={form.customFields ?? []}
+                onChange={pairs => setForm(prev => ({ ...prev, customFields: pairs }))}
+              />
             </div>
           </section>
         )}
@@ -217,60 +222,78 @@ export const ConfigPanel = () => {
           </section>
         )}
 
-        {/* Automated-specific (Schema-Driven) */}
+        {/* Automated-specific */}
         {selectedNode.type === 'automated' && (
           <section>
             <SectionHeader>Automation Settings</SectionHeader>
             <div className="flex flex-col gap-3">
-              <Field label="Action Type">
-                <select
-                  className={inputCls()}
-                  value={form.actionType ?? ''}
-                  onChange={e => handleActionTypeChange(e.target.value)}
-                >
-                  <option value="" disabled>Select an action...</option>
-                  {schemas.map(s => (
-                    <option key={s.id} value={s.id}>{s.label}</option>
-                  ))}
-                </select>
-              </Field>
+              {automationActions.length === 0 ? (
+                <p className="text-[10px] text-slate-400 italic">Loading actions...</p>
+              ) : (
+                <>
+                  <Field label="Action Type">
+                    <select
+                      className={inputCls()}
+                      value={form.actionType ?? ''}
+                      onChange={e => {
+                        setForm(prev => ({
+                          ...prev,
+                          actionType: e.target.value,
+                          actionParams: {}
+                        }))
+                      }}
+                    >
+                      <option value="" disabled>Select an action...</option>
+                      {automationActions.map(a => (
+                        <option key={a.id} value={a.id}>{a.label}</option>
+                      ))}
+                    </select>
+                  </Field>
 
-              {currentSchema && (
-                <div className="p-3 rounded-lg bg-slate-50 border border-slate-100 flex flex-col gap-3 mt-1">
-                  <p className="text-[10px] text-slate-500 italic mb-1">{currentSchema.description}</p>
-                  {currentSchema.params.map(param => (
-                    <Field key={param.name} label={param.label}>
-                      {param.type === 'select' ? (
-                        <select
-                          className={inputCls()}
-                          value={form.actionParams?.[param.name] ?? ''}
-                          onChange={e => setParam(param.name, e.target.value)}
-                        >
-                          <option value="" disabled>{param.placeholder || 'Select option'}</option>
-                          {param.options?.map(opt => (
-                            <option key={opt} value={opt}>{opt}</option>
-                          ))}
-                        </select>
-                      ) : param.type === 'textarea' ? (
-                        <textarea
-                          className={clsx(inputCls(), 'min-h-[80px]')}
-                          value={form.actionParams?.[param.name] ?? ''}
-                          onChange={e => setParam(param.name, e.target.value)}
-                          placeholder={param.placeholder}
-                        />
-                      ) : (
-                        <input
-                          type={param.type}
-                          className={inputCls()}
-                          value={form.actionParams?.[param.name] ?? ''}
-                          onChange={e => setParam(param.name, e.target.value)}
-                          placeholder={param.placeholder}
-                        />
-                      )}
+                  {selectedAction && selectedAction.params.map(param => (
+                    <Field key={param} label={param.charAt(0).toUpperCase() + param.slice(1)}>
+                      <input
+                        className={inputCls()}
+                        value={form.actionParams?.[param] ?? ''}
+                        onChange={e => {
+                          const newParams = { ...(form.actionParams || {}), [param]: e.target.value }
+                          set('actionParams', newParams)
+                        }}
+                        placeholder={`Enter ${param}`}
+                      />
                     </Field>
                   ))}
-                </div>
+                </>
               )}
+            </div>
+          </section>
+        )}
+
+        {/* End-specific */}
+        {selectedNode.type === 'end' && (
+          <section>
+            <SectionHeader>Terminal Settings</SectionHeader>
+            <div className="flex flex-col gap-3">
+              <Field label="End Message">
+                <textarea
+                  className={clsx(inputCls(), 'resize-none min-h-[80px]')}
+                  value={form.endMessage ?? ''}
+                  onChange={e => set('endMessage', e.target.value)}
+                  placeholder="Workflow completion message..."
+                />
+              </Field>
+              <div className="flex items-center gap-2 mt-1">
+                <input
+                  type="checkbox"
+                  id="summaryFlag"
+                  className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                  checked={form.summaryFlag ?? false}
+                  onChange={e => set('summaryFlag', e.target.checked)}
+                />
+                <label htmlFor="summaryFlag" className="text-[11px] text-slate-600 font-medium cursor-pointer">
+                  Attach execution summary to completion
+                </label>
+              </div>
             </div>
           </section>
         )}

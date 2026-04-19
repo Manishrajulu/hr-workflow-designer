@@ -58,6 +58,9 @@ const makeNode = (id: string, type: NodeType, x: number, y: number, label: strin
     actionParams: {},
     status: 'idle' as const,
     meta: label,
+    endMessage: '',
+    summaryFlag: false,
+    customFields: [],
     ...extra,
   },
 })
@@ -137,8 +140,28 @@ const mockAutomations: Automation[] = [
   },
 ]
 
+export interface AutomationAction {
+  id: string
+  label: string
+  params: string[]
+}
+
+const mockAutomationActions: AutomationAction[] = [
+  { id: 'send_email',    label: 'Send Email',         params: ['to', 'subject', 'body'] },
+  { id: 'generate_doc',  label: 'Generate Document',  params: ['template', 'recipient'] },
+  { id: 'update_record', label: 'Update HR Record',   params: ['field', 'value'] },
+  { id: 'webhook',       label: 'Trigger Webhook',    params: ['url', 'method'] },
+  { id: 'slack_notify',  label: 'Slack Notification', params: ['channel', 'message'] },
+]
+
 // GET /automations
-export const getAutomations = async (): Promise<Automation[]> => {
+export const getAutomations = async (): Promise<AutomationAction[]> => {
+  await delay(300)
+  return mockAutomationActions
+}
+
+// GET /workflow-templates
+export const getWorkflowTemplates = async (): Promise<Automation[]> => {
   await delay(400)
   return mockAutomations
 }

@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import type { NodeType } from '../../types/workflow'
 import { NODE_TYPE_CONFIG } from '../../types/workflow'
 import { useWorkflowStore } from '../../store/workflowStore'
-import { getAutomations } from '../../api/mockApi'
+import { getWorkflowTemplates } from '../../api/mockApi'
 import { useEffect, useState } from 'react'
 import type { Automation } from '../../types/workflow'
 
@@ -52,8 +52,8 @@ export const NodePalette = ({ onDragStart }: NodePaletteProps) => {
   const [activeTemplate, setActiveTemplate] = useState<string | null>('wf-onboarding')
 
   useEffect(() => {
-    getAutomations().then(data => {
-      setAutomations(data)
+    getWorkflowTemplates().then(data => {
+      setAutomations(data) 
       setLoading(false)
     })
   }, [])

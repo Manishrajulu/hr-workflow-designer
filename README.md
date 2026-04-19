@@ -65,3 +65,55 @@ The application will be available at `http://localhost:5173`.
 - **Cycle Handling**: For this version, cyclic graphs are marked as "Invalid" to enforce deterministic HR flows. In future iterations, loops could be supported with explicit "Maximum Iteration" configs.
 - **Mock Persistence**: State is maintained in-memory and lost on refresh. JSON Export/Import is the primary way to persist designs for now.
 - **Simulation Time**: Artificial delays are added to simulation steps to improve visual tracking of the execution flow.
+
+---
+
+### 🔌 API Layer
+
+#### GET /automations
+Returns available automated actions with dynamic param schemas:
+```json
+[
+  { "id": "send_email",    "label": "Send Email",         "params": ["to", "subject", "body"] },
+  { "id": "generate_doc",  "label": "Generate Document",  "params": ["template", "recipient"] },
+  { "id": "update_record", "label": "Update HR Record",   "params": ["field", "value"] },
+  { "id": "webhook",       "label": "Trigger Webhook",    "params": ["url", "method"] },
+  { "id": "slack_notify",  "label": "Slack Notification", "params": ["channel", "message"] }
+]
+```
+
+#### POST /simulate
+Accepts serialized workflow JSON, returns step-by-step execution result:
+```json
+{
+  "workflowId": "wf-onboarding",
+  "status": "success",
+  "steps": [
+    { "nodeId": "n1", "nodeLabel": "Hire Date Trigger", "status": "success", "duration": 134 }
+  ],
+  "totalDuration": 891
+}
+```
+
+### ✅ Completed vs. What I'd Add Next
+
+#### Completed
+- All 5 custom node types with full TypeScript interfaces (strict mode)
+- Dynamic config forms per node type with field validation
+- Start + Task nodes: key-value custom fields editor
+- End Node: endMessage field + summaryFlag boolean toggle
+- Automated Node: fetches actions from GET /automations, renders param fields dynamically based on API response
+- Zustand store with BFS-based graph execution simulation
+- Cycle detection + topology validation (disconnected nodes, missing start/end)
+- Mock API layer with simulated network delay (300ms)
+- Export / Import workflow as JSON
+- MiniMap, zoom controls, 3 pre-built templates
+
+#### Would add with more time
+- Undo/Redo via Zustand middleware or immer patches
+- Auto-layout using Dagre algorithm
+- Conditional branch / decision node type
+- Visual error badges rendered directly on invalid nodes on the canvas
+- localStorage persistence between sessions
+- Unit tests with Jest + React Testing Library
+- Node version history / audit trail
