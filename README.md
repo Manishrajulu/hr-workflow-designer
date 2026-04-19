@@ -1,6 +1,14 @@
 # HR Workflow Designer
+## 🖼 Preview
+
+### Canvas
+![HR Workflow Designer](./screenshot.jpeg)
+
+### Simulation
+![Workflow Simulation](./screenshot-simulation.jpeg)
 
 A production-grade, schema-driven workflow orchestration module built with React, React Flow, and Zustand. This application allows HR administrators to design, validate, and simulate complex operational workflows with real-time feedback and graph-based execution.
+
 
 ## 🚀 Features
 
